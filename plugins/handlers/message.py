@@ -81,6 +81,7 @@ def forward(client: Client, message: Message):
                 link_list = link_list[1:]
                 origin_text = origin_text.split("\n\n")[1]
                 origin_text = sub(" by .*$", "#######", origin_text)
+                logger.warning(origin_text)
                 origin_text_list = origin_text.split("#######")
                 logger.warning(origin_text_list)
                 i = 0
