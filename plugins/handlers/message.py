@@ -82,15 +82,17 @@ def forward(client: Client, message: Message):
                 origin_text = origin_text.split("\n\n")[1]
                 origin_text = sub(" by .*$", "#######", origin_text)
                 origin_text_list = origin_text.split("#######")
+                logger.warning(origin_text_list)
                 i = 0
                 for link_unit in link_list:
-                    if link_unit:
-                        commit_hash = link_unit[0]
-                        commit_link = link_unit[1]
-                        commit_message = origin_text_list[i].strip().split(": ")[1]
-                        text += (f"{general_link(commit_hash, commit_link)}：" + "-" * 24 + "\n\n"
-                                 f"{code_block(commit_message)}\n\n")
-                        i += 1
+                    commit_hash = link_unit[0]
+                    commit_link = link_unit[1]
+                    logger.warning(origin_text_list[i])
+                    logger.warning(origin_text_list[i].split(": "))
+                    commit_message = origin_text_list[i].strip().split(": ")[1]
+                    text += (f"{general_link(commit_hash, commit_link)}：" + "-" * 24 + "\n\n"
+                             f"{code_block(commit_message)}\n\n")
+                    i += 1
 
                 thread(send_message, (client, glovar.github_channel_id, text))
     except Exception as e:
