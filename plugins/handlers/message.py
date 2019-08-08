@@ -94,7 +94,6 @@ def forward(client: Client, message: Message):
                     commit_hash = link_unit[0]
                     commit_link = link_unit[1]
                     logger.warning(origin_text_list[i])
-                    logger.warning(origin_text_list[i].split(": "))
                     commit_message = origin_text_list[i].strip().split(": ")[1]
                     text += (f"{general_link(commit_hash, commit_link)}：" + "-" * 24 + "\n\n"
                              f"{code_block(commit_message)}\n\n")
