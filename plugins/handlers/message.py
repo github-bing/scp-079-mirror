@@ -86,14 +86,11 @@ def forward(client: Client, message: Message):
                     string=origin_text,
                     flags=re.M
                 )
-                logger.warning(origin_text)
                 origin_text_list = origin_text.split("#######")
-                logger.warning(origin_text_list)
                 i = 0
                 for link_unit in link_list:
                     commit_hash = link_unit[0]
                     commit_link = link_unit[1]
-                    logger.warning(origin_text_list[i])
                     commit_message = origin_text_list[i].strip().split(": ")[1]
                     text += (f"{general_link(commit_hash, commit_link)}：" + "-" * 24 + "\n\n"
                              f"{code_block(commit_message)}\n\n")
