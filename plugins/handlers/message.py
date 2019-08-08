@@ -60,12 +60,18 @@ def forward(client: Client, message: Message):
         origin_text = get_text(message)
         logger.warning(origin_text)
         if search("new commit.? to .*:.*:$", origin_text):
+            logger.warning("ok")
             link_list = []
             for en in message.entities:
                 if en.url:
-                    link_list.append((origin_text[en.offset:en.offset + en.length], en.url))
+                    the_text = origin_text[en.offset:en.offset + en.length]
+                    logger.warning(the_text)
+                    the_link = en.url
+                    logger.warning(the_link)
+                    link_list.append((the_text, the_link))
 
             logger.warning(link_list)
+            logger.warning("check")
             if len(link_list) > 1:
                 commit_unit = link_list[0]
                 commit_unit_text = commit_unit[0]
