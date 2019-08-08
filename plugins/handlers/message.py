@@ -63,14 +63,11 @@ def forward(client: Client, message: Message):
         logger.warning(search("new commit.? to .*:.*:", origin_text))
         logger.warning(search("new commit.? to .*:.*:$", origin_text))
         if search("new commit.? to .*:.*:", origin_text):
-            logger.warning("ok")
             link_list = []
             for en in message.entities:
                 if en.url:
                     the_text = origin_text[en.offset:en.offset + en.length]
-                    logger.warning(the_text)
                     the_link = en.url
-                    logger.warning(the_link)
                     link_list.append((the_text, the_link))
 
             if len(link_list) > 1:
@@ -87,17 +84,17 @@ def forward(client: Client, message: Message):
                         f"提交数量：{general_link(commit_count, compare_link)}\n")
                 link_list = link_list[1:]
                 origin_text = origin_text.split("\n\n")[1]
-                origin_text = sub(" by .*$", "#######", origin_text).split("#######\n")
-                logger.warning(origin_text)
+                origin_text = sub(" by .*$", "#######", origin_text)
+                origin_text_list = origin_text.split("#######")
                 i = 0
                 for link_unit in link_list:
-                    commit_hash = link_unit[0]
-                    commit_link = link_unit[1]
-                    logger.warning(origin_text[i])
-                    commit_message = origin_text[i].split(": ")[1]
-                    text += (f"{general_link(commit_hash, commit_link)}：" + "-" * 24 + "\n\n"
-                             f"{code_block(commit_message)}\n\n")
-                    i += 1
+                    if link_unit:
+                        commit_hash = link_unit[0]
+                        commit_link = link_unit[1]
+                        commit_message = origin_text_list[i].strip().split(": ")[1]
+                        text += (f"{general_link(commit_hash, commit_link)}：" + "-" * 24 + "\n\n"
+                                 f"{code_block(commit_message)}\n\n")
+                        i += 1
 
                 thread(send_message, (client, glovar.github_channel_id, text))
     except Exception as e:
