@@ -58,7 +58,7 @@ def exchange_emergency(_: Client, message: Message):
 def forward(client: Client, message: Message):
     try:
         origin_text = get_text(message)
-        if search("new commits to .*?:.*?:", origin_text):
+        if search("new commit.? to .*:.*:$", origin_text):
             link_list = []
             for en in message.entities:
                 if en.url:
@@ -78,7 +78,7 @@ def forward(client: Client, message: Message):
                         f"提交数量：{general_link(commit_count, compare_link)}\n")
                 link_list = link_list[1:]
                 origin_text = origin_text.split("\n\n")[1]
-                origin_text = sub(" by .*?$", "#######", origin_text)
+                origin_text = sub(" by .*$", "#######", origin_text)
                 i = 0
                 for link_unit in link_list:
                     commit_hash = link_unit[0]
