@@ -58,12 +58,14 @@ def exchange_emergency(_: Client, message: Message):
 def forward(client: Client, message: Message):
     try:
         origin_text = get_text(message)
+        logger.warning(origin_text)
         if search("new commit.? to .*:.*:$", origin_text):
             link_list = []
             for en in message.entities:
                 if en.url:
                     link_list.append((origin_text[en.offset:en.offset + en.length], en.url))
 
+            logger.warning(link_list)
             if len(link_list) > 1:
                 commit_unit = link_list[0]
                 commit_unit_text = commit_unit[0]
