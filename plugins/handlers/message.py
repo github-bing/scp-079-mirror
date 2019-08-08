@@ -57,7 +57,7 @@ def exchange_emergency(_: Client, message: Message):
 @Client.on_message(Filters.incoming & Filters.bot & github_bot)
 def forward(client: Client, message: Message):
     try:
-        origin_text = get_text(message)
+        origin_text = "*" + get_text(message)
         logger.warning(origin_text)
         logger.warning(search("new commit.? to", origin_text))
         logger.warning(search("new commit.? to .*:.*:", origin_text))
@@ -73,8 +73,6 @@ def forward(client: Client, message: Message):
                     logger.warning(the_link)
                     link_list.append((the_text, the_link))
 
-            logger.warning(link_list)
-            logger.warning("check")
             if len(link_list) > 1:
                 commit_unit = link_list[0]
                 commit_unit_text = commit_unit[0]
@@ -89,12 +87,14 @@ def forward(client: Client, message: Message):
                         f"提交数量：{general_link(commit_count, compare_link)}\n")
                 link_list = link_list[1:]
                 origin_text = origin_text.split("\n\n")[1]
-                origin_text = sub(" by .*$", "#######", origin_text)
+                origin_text = sub(" by .*$", "#######", origin_text).split("#######\n")
+                logger.warning(origin_text)
                 i = 0
                 for link_unit in link_list:
                     commit_hash = link_unit[0]
                     commit_link = link_unit[1]
-                    commit_message = origin_text.split("#######\n")[i].split(": ")[1]
+                    logger.warning(origin_text[i])
+                    commit_message = origin_text[i].split(": ")[1]
                     text += (f"{general_link(commit_hash, commit_link)}：" + "-" * 24 + "\n\n"
                              f"{code_block(commit_message)}\n\n")
                     i += 1
