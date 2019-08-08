@@ -17,7 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import logging
-from re import search, sub
+import re
 
 from pyrogram import Client, Filters, Message
 
@@ -58,7 +58,7 @@ def exchange_emergency(_: Client, message: Message):
 def forward(client: Client, message: Message):
     try:
         origin_text = "*" + get_text(message)
-        if search("new commit.? to .*:.*:", origin_text):
+        if re.search("new commit.? to .*:.*:", origin_text):
             link_list = []
             for en in message.entities:
                 if en.url:
@@ -80,7 +80,12 @@ def forward(client: Client, message: Message):
                         f"提交数量：{general_link(commit_count, compare_link)}\n")
                 link_list = link_list[1:]
                 origin_text = origin_text.split("\n\n")[1]
-                origin_text = sub(" by .*$", "#######", origin_text)
+                origin_text = re.sub(
+                    pattern=" by .*$",
+                    repl="#######",
+                    string=origin_text,
+                    flags=re.M
+                )
                 logger.warning(origin_text)
                 origin_text_list = origin_text.split("#######")
                 logger.warning(origin_text_list)
