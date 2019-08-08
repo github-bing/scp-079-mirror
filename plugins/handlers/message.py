@@ -86,6 +86,7 @@ def forward(client: Client, message: Message):
                     string=origin_text,
                     flags=re.M
                 )
+                #
                 logger.warning(origin_text)
                 origin_text_list = origin_text.split("#######")
                 logger.warning(origin_text_list)
