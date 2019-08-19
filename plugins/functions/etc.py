@@ -23,7 +23,7 @@ from threading import Thread
 from time import sleep
 from typing import Any, Callable, Union
 
-from pyrogram import Message
+from pyrogram import Message, MessageEntity
 from pyrogram.errors import FloodWait
 
 # Enable logging
@@ -73,6 +73,22 @@ def general_link(text: Union[int, str], link: str) -> str:
         result = f'<a href="{link}">{escape(str(text))}</a>'
     except Exception as e:
         logger.warning(f"General link error: {e}", exc_info=True)
+
+    return result
+
+
+def get_entity_text(message: Message, entity: MessageEntity) -> str:
+    # Get a message's entity text
+    result = ""
+    try:
+        text = get_text(message)
+        if text and entity:
+            offset = entity.offset
+            length = entity.length
+            text = text.encode("utf-16-le")
+            result = text[offset * 2:(offset + length) * 2].decode("utf-16-le")
+    except Exception as e:
+        logger.warning(f"Get entity text error: {e}", exc_info=True)
 
     return result
 

@@ -23,7 +23,7 @@ from pyrogram import Client, Filters, Message
 
 from .. import glovar
 from ..functions.channel import receive_text_data
-from ..functions.etc import code, code_block, general_link, get_text, thread
+from ..functions.etc import code, code_block, general_link, get_entity_text, get_text, thread
 from ..functions.filters import github_bot, hide_channel
 from ..functions.telegram import send_message
 
@@ -57,12 +57,12 @@ def exchange_emergency(_: Client, message: Message):
 @Client.on_message(Filters.incoming & Filters.bot & github_bot)
 def forward(client: Client, message: Message):
     try:
-        origin_text = "*" + get_text(message)
+        origin_text = get_text(message)
         if re.search("new commit.? to .*:.*:", origin_text):
             link_list = []
             for en in message.entities:
                 if en.url:
-                    the_text = origin_text[en.offset:en.offset + en.length]
+                    the_text = get_entity_text(message, en)
                     the_link = en.url
                     link_list.append((the_text, the_link))
 
