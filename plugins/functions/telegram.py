@@ -20,12 +20,72 @@ import logging
 from typing import Optional, Union
 
 from pyrogram import Client, InlineKeyboardMarkup, Message
+from pyrogram.api.functions.messages import ReadMentions
+from pyrogram.api.types import InputPeerUser, InputPeerChannel
 from pyrogram.errors import ChannelInvalid, ChannelPrivate, FloodWait, PeerIdInvalid
 
 from .etc import wait_flood
 
 # Enable logging
 logger = logging.getLogger(__name__)
+
+
+def read_history(client: Client, cid: int) -> bool:
+    # Mark messages in a chat as read
+    try:
+        flood_wait = True
+        while flood_wait:
+            flood_wait = False
+            try:
+                client.read_history(chat_id=cid)
+            except FloodWait as e:
+                flood_wait = True
+                wait_flood(e)
+
+        return True
+    except Exception as e:
+        logger.warning(f"Read history error: {e}", exc_info=True)
+
+    return False
+
+
+def read_mention(client: Client, cid: int) -> bool:
+    # Mark a mention as read
+    try:
+        peer = resolve_peer(client, cid)
+        if peer:
+            flood_wait = True
+            while flood_wait:
+                flood_wait = False
+                try:
+                    client.send(ReadMentions(peer=peer))
+                except FloodWait as e:
+                    flood_wait = True
+                    wait_flood(e)
+
+            return True
+    except Exception as e:
+        logger.warning(f"Read mention error: {e}", exc_info=True)
+
+    return False
+
+
+def resolve_peer(client: Client, pid: int) -> Optional[Union[InputPeerChannel, InputPeerUser]]:
+    # Get an input peer by id
+    result = None
+    try:
+        flood_wait = True
+        while flood_wait:
+            flood_wait = False
+            try:
+                result = client.resolve_peer(pid)
+            except FloodWait as e:
+                flood_wait = True
+                wait_flood(e)
+    except Exception as e:
+        logger.warning(f"Resolve peer error: {e}", exc_info=True)
+
+    return result
 
 
 def send_message(client: Client, cid: int, text: str, mid: int = None,

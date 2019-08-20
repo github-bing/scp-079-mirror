@@ -25,7 +25,7 @@ from .. import glovar
 from ..functions.channel import receive_text_data
 from ..functions.etc import code, code_block, general_link, get_entity_text, get_text, thread
 from ..functions.filters import github_bot, hide_channel
-from ..functions.telegram import send_message
+from ..functions.telegram import read_history, read_mention, send_message
 
 # Enable logging
 logger = logging.getLogger(__name__)
@@ -99,3 +99,23 @@ def forward(client: Client, message: Message):
                 thread(send_message, (client, glovar.github_channel_id, text))
     except Exception as e:
         logger.warning(f"Forward error: {e}", exc_info=True)
+
+
+@Client.on_message(~Filters.private & Filters.incoming & Filters.mentioned, group=1)
+def mark_mention(client: Client, message: Message):
+    try:
+        if message.chat:
+            cid = message.chat.id
+            thread(read_mention, (client, cid))
+    except Exception as e:
+        logger.warning(f"Mark mention error: {e}", exc_info=True)
+
+
+@Client.on_message((~Filters.private | Filters.bot) & Filters.incoming, group=2)
+def mark_message(client, message):
+    try:
+        if message.chat:
+            cid = message.chat.id
+            thread(read_history, (client, cid))
+    except Exception as e:
+        logger.warning(f"Mark message error: {e}", exc_info=True)
