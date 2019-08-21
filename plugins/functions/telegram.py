@@ -70,7 +70,7 @@ def read_mention(client: Client, cid: int) -> bool:
     return False
 
 
-def resolve_peer(client: Client, pid: int) -> Optional[Union[InputPeerChannel, InputPeerUser]]:
+def resolve_peer(client: Client, pid: Union[int, str]) -> Optional[Union[InputPeerChannel, InputPeerUser]]:
     # Get an input peer by id
     result = None
     try:
