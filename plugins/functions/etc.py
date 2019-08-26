@@ -114,6 +114,7 @@ def thread(target: Callable, args: tuple) -> bool:
         t = Thread(target=target, args=args)
         t.daemon = True
         t.start()
+
         return True
     except Exception as e:
         logger.warning(f"Thread error: {e}", exc_info=True)

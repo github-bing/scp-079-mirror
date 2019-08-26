@@ -34,6 +34,7 @@ logger = logging.getLogger(__name__)
 @Client.on_message(Filters.incoming & Filters.channel & hide_channel
                    & ~Filters.command(glovar.all_commands, glovar.prefix), group=-1)
 def exchange_emergency(_: Client, message: Message):
+    # Sent emergency channel transfer request
     try:
         # Read basic information
         data = receive_text_data(message)
@@ -56,6 +57,7 @@ def exchange_emergency(_: Client, message: Message):
 
 @Client.on_message(Filters.incoming & Filters.bot & github_bot)
 def forward(client: Client, message: Message):
+    # Forward messages from GitHub bot to the channel
     try:
         origin_text = get_text(message)
         if re.search("new commit.? to .*:.*:", origin_text):
@@ -103,6 +105,7 @@ def forward(client: Client, message: Message):
 
 @Client.on_message(~Filters.private & Filters.incoming & Filters.mentioned, group=1)
 def mark_mention(client: Client, message: Message):
+    # Mark mention as read
     try:
         if message.chat:
             cid = message.chat.id
@@ -113,6 +116,7 @@ def mark_mention(client: Client, message: Message):
 
 @Client.on_message((~Filters.private | Filters.bot) & Filters.incoming, group=2)
 def mark_message(client, message):
+    # Mark messages from groups, channels, and bots as read
     try:
         if message.chat:
             cid = message.chat.id
