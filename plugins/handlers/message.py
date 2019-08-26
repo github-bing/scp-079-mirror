@@ -22,9 +22,9 @@ import re
 from pyrogram import Client, Filters, Message
 
 from .. import glovar
-from ..functions.channel import receive_text_data
 from ..functions.etc import code, code_block, general_link, get_entity_text, get_text, thread
 from ..functions.filters import github_bot, hide_channel
+from ..functions.receive import receive_text_data
 from ..functions.telegram import read_history, read_mention, send_message
 
 # Enable logging
