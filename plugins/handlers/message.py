@@ -33,7 +33,7 @@ logger = logging.getLogger(__name__)
 
 @Client.on_message(Filters.incoming & Filters.channel & hide_channel
                    & ~Filters.command(glovar.all_commands, glovar.prefix), group=-1)
-def exchange_emergency(_: Client, message: Message):
+def exchange_emergency(_: Client, message: Message) -> bool:
     # Sent emergency channel transfer request
     try:
         # Read basic information
@@ -51,12 +51,16 @@ def exchange_emergency(_: Client, message: Message):
                             glovar.should_hide = data
                         elif data is False and sender == "MANAGE":
                             glovar.should_hide = data
+
+        return True
     except Exception as e:
         logger.warning(f"Exchange emergency error: {e}", exc_info=True)
 
+    return False
+
 
 @Client.on_message(Filters.incoming & Filters.bot & github_bot)
-def forward(client: Client, message: Message):
+def forward(client: Client, message: Message) -> bool:
     # Forward messages from GitHub bot to the channel
     try:
         origin_text = get_text(message)
@@ -99,27 +103,39 @@ def forward(client: Client, message: Message):
                     i += 1
 
                 thread(send_message, (client, glovar.github_channel_id, text))
+
+        return True
     except Exception as e:
         logger.warning(f"Forward error: {e}", exc_info=True)
 
+    return False
+
 
 @Client.on_message(~Filters.private & Filters.incoming & Filters.mentioned, group=1)
-def mark_mention(client: Client, message: Message):
+def mark_mention(client: Client, message: Message) -> bool:
     # Mark mention as read
     try:
         if message.chat:
             cid = message.chat.id
             thread(read_mention, (client, cid))
+
+        return True
     except Exception as e:
         logger.warning(f"Mark mention error: {e}", exc_info=True)
 
+    return False
+
 
 @Client.on_message((~Filters.private | Filters.bot) & Filters.incoming, group=2)
-def mark_message(client, message):
+def mark_message(client: Client, message: Message) -> bool:
     # Mark messages from groups, channels, and bots as read
     try:
         if message.chat:
             cid = message.chat.id
             thread(read_history, (client, cid))
+
+        return True
     except Exception as e:
         logger.warning(f"Mark message error: {e}", exc_info=True)
+
+    return False
