@@ -76,11 +76,7 @@ except Exception as e:
 # Check
 if (prefix == []
         or github_id == 0
-        or critical_channel_id == 0
-        or exchange_channel_id == 0
-        or github_channel_id == 0
-        or hide_channel_id == 0
-        or test_group_id == 0):
+        or github_channel_id == 0):
     logger.critical("No proper settings")
     raise SystemExit("No proper settings")
 
