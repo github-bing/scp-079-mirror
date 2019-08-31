@@ -38,5 +38,5 @@ scheduler = BackgroundScheduler()
 scheduler.add_job(update_status, "cron", [app], minute=30)
 scheduler.start()
 
-# Hold
-app.idle()
+# Run
+app.run()
