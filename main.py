@@ -29,9 +29,8 @@ from plugins.functions.timers import update_status
 # Enable logging
 logger = logging.getLogger(__name__)
 
-# Start
+# Config session
 app = Client(session_name="account")
-app.start()
 
 # Timer
 scheduler = BackgroundScheduler()
