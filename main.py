@@ -24,6 +24,7 @@ import logging
 from apscheduler.schedulers.background import BackgroundScheduler
 from pyrogram import Client
 
+from plugins import glovar
 from plugins.functions.timers import update_status
 
 # Enable logging
@@ -34,7 +35,9 @@ app = Client(session_name="account")
 
 # Timer
 scheduler = BackgroundScheduler()
-scheduler.add_job(update_status, "cron", [app], minute=30)
+if glovar.exchange_channel_id:
+    scheduler.add_job(update_status, "cron", [app], minute=30)
+
 scheduler.start()
 
 # Run

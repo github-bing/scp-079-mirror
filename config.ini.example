@@ -21,7 +21,12 @@ github_id = [DATA EXPUNGED]
 
 [channels]
 critical_channel_id = 0
+debug_channel_id = 0
 exchange_channel_id = 0
 github_channel_id = [DATA EXPUNGED]
 hide_channel_id = 0
 test_group_id = 0
+
+[custom]
+project_link = [DATA EXPUNGED]
+project_name = [DATA EXPUNGED]
