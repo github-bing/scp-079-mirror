@@ -32,13 +32,18 @@ logger = logging.getLogger(__name__)
 
 # Config session
 app = Client(session_name="account")
+app.start()
+
+# Send online status
+update_status(app, "online")
 
 # Timer
 scheduler = BackgroundScheduler()
-if glovar.exchange_channel_id:
-    scheduler.add_job(update_status, "cron", [app], minute=30)
-
+glovar.exchange_channel_id and scheduler.add_job(update_status, "cron", [app, "awake"], minute=30)
 scheduler.start()
 
-# Run
-app.run()
+# Hold
+app.idle()
+
+# Stop
+app.stop()
