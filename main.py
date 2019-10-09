@@ -35,7 +35,7 @@ app = Client(session_name="account")
 app.start()
 
 # Send online status
-update_status(app, "online")
+glovar.exchange_channel_id and update_status(app, "online")
 
 # Timer
 scheduler = BackgroundScheduler()

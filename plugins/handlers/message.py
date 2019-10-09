@@ -46,20 +46,27 @@ def exchange_emergency(client: Client, message: Message) -> bool:
         action = data["action"]
         action_type = data["type"]
         data = data["data"]
-        if "EMERGENCY" in receivers:
-            if action == "backup":
-                if action_type == "hide":
-                    if data is True:
-                        glovar.should_hide = data
-                    elif data is False and sender == "MANAGE":
-                        glovar.should_hide = data
 
-                    project_text = general_link(glovar.project_name, glovar.project_link)
-                    hide_text = (lambda x: lang("enabled") if x else "disabled")(glovar.should_hide)
-                    text = (f"{lang('project')}{lang('colon')}{project_text}\n"
-                            f"{lang('action')}{lang('colon')}{code(lang('transfer_channel'))}\n"
-                            f"{lang('emergency_channel')}{lang('colon')}{code(hide_text)}\n")
-                    thread(send_message, (client, glovar.debug_channel_id, text))
+        if "EMERGENCY" not in receivers:
+            return True
+
+        if action != "backup":
+            return True
+
+        if action_type != "hide":
+            return True
+
+        if data is True:
+            glovar.should_hide = data
+        elif data is False and sender == "MANAGE":
+            glovar.should_hide = data
+
+        project_text = general_link(glovar.project_name, glovar.project_link)
+        hide_text = (lambda x: lang("enabled") if x else "disabled")(glovar.should_hide)
+        text = (f"{lang('project')}{lang('colon')}{project_text}\n"
+                f"{lang('action')}{lang('colon')}{code(lang('transfer_channel'))}\n"
+                f"{lang('emergency_channel')}{lang('colon')}{code(hide_text)}\n")
+        thread(send_message, (client, glovar.debug_channel_id, text))
 
         return True
     except Exception as e:
@@ -73,45 +80,47 @@ def forward(client: Client, message: Message) -> bool:
     # Forward messages from GitHub bot to the channel
     try:
         origin_text = get_text(message)
-        if re.search("new commit.? to .*:.*:", origin_text):
-            link_list = []
-            for en in message.entities:
-                if en.url:
-                    the_text = get_entity_text(message, en)
-                    the_link = en.url
-                    link_list.append((the_text, the_link))
+        if not re.search("new commit.? to .*:.*:", origin_text):
+            return True
 
-            if len(link_list) > 1:
-                commit_unit = link_list[0]
-                commit_unit_text = commit_unit[0]
-                compare_link = commit_unit[1]
-                commit_count = commit_unit_text.split(" new ")[0]
-                commit_line = origin_text.split("\n\n")[0]
-                commit_project_branch = commit_line.split(" to ")[1].split(":")
-                commit_project = commit_project_branch[0]
-                commit_branch = commit_project_branch[1]
-                text = (f"{lang('update_repo')}{lang('colon')}{code(commit_project)}\n"
-                        f"{lang('update_branch')}{lang('colon')}{code(commit_branch)}\n"
-                        f"{lang('commit_count')}{lang('colon')}{general_link(commit_count, compare_link)}\n")
-                link_list = link_list[1:]
-                origin_text = origin_text.split("\n\n")[1]
-                origin_text = re.sub(
-                    pattern=" by .*$",
-                    repl="#######",
-                    string=origin_text,
-                    flags=re.M
-                )
-                origin_text_list = origin_text.split("#######")
-                i = 0
-                for link_unit in link_list:
-                    commit_hash = link_unit[0]
-                    commit_link = link_unit[1]
-                    commit_message = origin_text_list[i].strip().split(": ")[1]
-                    text += (f"{general_link(commit_hash, commit_link)}：" + "-" * 24 + "\n\n"
-                             f"{code_block(commit_message)}\n\n")
-                    i += 1
+        link_list = []
+        for en in message.entities:
+            if en.url:
+                the_text = get_entity_text(message, en)
+                the_link = en.url
+                link_list.append((the_text, the_link))
 
-                thread(send_message, (client, glovar.github_channel_id, text))
+        if len(link_list) > 1:
+            commit_unit = link_list[0]
+            commit_unit_text = commit_unit[0]
+            compare_link = commit_unit[1]
+            commit_count = commit_unit_text.split(" new ")[0]
+            commit_line = origin_text.split("\n\n")[0]
+            commit_project_branch = commit_line.split(" to ")[1].split(":")
+            commit_project = commit_project_branch[0]
+            commit_branch = commit_project_branch[1]
+            text = (f"{lang('update_repo')}{lang('colon')}{code(commit_project)}\n"
+                    f"{lang('update_branch')}{lang('colon')}{code(commit_branch)}\n"
+                    f"{lang('commit_count')}{lang('colon')}{general_link(commit_count, compare_link)}\n")
+            link_list = link_list[1:]
+            origin_text = origin_text.split("\n\n")[1]
+            origin_text = re.sub(
+                pattern=" by .*$",
+                repl="#######",
+                string=origin_text,
+                flags=re.M
+            )
+            origin_text_list = origin_text.split("#######")
+            i = 0
+            for link_unit in link_list:
+                commit_hash = link_unit[0]
+                commit_link = link_unit[1]
+                commit_message = origin_text_list[i].strip().split(": ")[1]
+                text += (f"{general_link(commit_hash, commit_link)}：" + "-" * 24 + "\n\n"
+                         f"{code_block(commit_message)}\n\n")
+                i += 1
+
+            thread(send_message, (client, glovar.github_channel_id, text))
 
         return True
     except Exception as e:
