@@ -102,7 +102,7 @@ lang: Dict[str, str] = {
     # Special
     "update_repo": (zh_cn and "更新项目") or "Repo",
     "update_branch": (zh_cn and "项目分支") or "Branch",
-    "commit_count": (zh_cn and "提交数量") or "Commit",
+    "commit_count": (zh_cn and "提交数量") or "Commit"
 }
 
 # Init
@@ -115,7 +115,7 @@ sender: str = "MIRROR"
 
 should_hide: bool = False
 
-version: str = "0.0.3"
+version: str = "0.0.4"
 
 # Start program
 copyright_text = (f"SCP-079-{sender} v{version}, Copyright (C) 2019 SCP-079 <https://scp-079.org>\n"
