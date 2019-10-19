@@ -38,7 +38,7 @@ app.start()
 glovar.exchange_channel_id and update_status(app, "online")
 
 # Timer
-scheduler = BackgroundScheduler()
+scheduler = BackgroundScheduler(job_defaults={"misfire_grace_time": 60})
 glovar.exchange_channel_id and scheduler.add_job(update_status, "cron", [app, "awake"], minute=30)
 scheduler.start()
 
