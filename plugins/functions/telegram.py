@@ -44,7 +44,7 @@ def read_history(client: Client, cid: int) -> bool:
 
         return True
     except Exception as e:
-        logger.warning(f"Read history error: {e}", exc_info=True)
+        logger.warning(f"Read history in {cid} error: {e}", exc_info=True)
 
     return False
 
@@ -67,7 +67,7 @@ def read_mention(client: Client, cid: int) -> bool:
 
         return True
     except Exception as e:
-        logger.warning(f"Read mention error: {e}", exc_info=True)
+        logger.warning(f"Read mention in {cid} error: {e}", exc_info=True)
 
     return False
 
@@ -85,7 +85,7 @@ def resolve_peer(client: Client, pid: Union[int, str]) -> Optional[Union[InputPe
                 flood_wait = True
                 wait_flood(e)
     except Exception as e:
-        logger.warning(f"Resolve peer error: {e}", exc_info=True)
+        logger.warning(f"Resolve peer {pid} error: {e}", exc_info=True)
 
     return result
 
