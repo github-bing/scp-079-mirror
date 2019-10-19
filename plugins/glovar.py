@@ -115,7 +115,7 @@ sender: str = "MIRROR"
 
 should_hide: bool = False
 
-version: str = "0.0.4"
+version: str = "0.0.5"
 
 # Start program
 copyright_text = (f"SCP-079-{sender} v{version}, Copyright (C) 2019 SCP-079 <https://scp-079.org>\n"
