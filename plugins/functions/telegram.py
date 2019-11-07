@@ -22,7 +22,7 @@ from typing import Optional, Union
 from pyrogram import Client, InlineKeyboardMarkup, Message
 from pyrogram.api.functions.messages import ReadMentions
 from pyrogram.api.types import InputPeerUser, InputPeerChannel
-from pyrogram.errors import ChannelInvalid, ChannelPrivate, FloodWait, PeerIdInvalid
+from pyrogram.errors import ButtonDataInvalid, ChannelInvalid, ChannelPrivate, FloodWait, PeerIdInvalid
 
 from .etc import wait_flood
 
@@ -115,6 +115,8 @@ def send_message(client: Client, cid: int, text: str, mid: int = None,
                 wait_flood(e)
             except (PeerIdInvalid, ChannelInvalid, ChannelPrivate):
                 return False
+            except ButtonDataInvalid:
+                logger.warning(f"Send message to {cid} - invalid markup: {markup}")
     except Exception as e:
         logger.warning(f"Send message to {cid} error: {e}", exc_info=True)
 

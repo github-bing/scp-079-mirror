@@ -32,9 +32,12 @@ def receive_text_data(message: Message) -> dict:
     data = {}
     try:
         text = get_text(message)
-        if text:
-            data = loads(text)
+
+        if not text:
+            return {}
+
+        data = loads(text)
     except Exception as e:
-        logger.warning(f"Receive data error: {e}")
+        logger.warning(f"Receive text data error: {e}")
 
     return data

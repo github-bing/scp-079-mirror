@@ -87,11 +87,14 @@ def get_entity_text(message: Message, entity: MessageEntity) -> str:
     result = ""
     try:
         text = get_text(message)
-        if text and entity:
-            offset = entity.offset
-            length = entity.length
-            text = text.encode("utf-16-le")
-            result = text[offset * 2:(offset + length) * 2].decode("utf-16-le")
+
+        if not text or not entity:
+            return ""
+
+        offset = entity.offset
+        length = entity.length
+        text = text.encode("utf-16-le")
+        result = text[offset * 2:(offset + length) * 2].decode("utf-16-le")
     except Exception as e:
         logger.warning(f"Get entity text error: {e}", exc_info=True)
 
@@ -122,6 +125,17 @@ def lang(text: str) -> str:
     return result
 
 
+def mention_id(uid: int) -> str:
+    # Get a ID mention string
+    result = ""
+    try:
+        result = general_link(f"{uid}", f"tg://user?id={uid}")
+    except Exception as e:
+        logger.warning(f"Mention id error: {e}", exc_info=True)
+
+    return result
+
+
 def thread(target: Callable, args: tuple) -> bool:
     # Call a function using thread
     try:
@@ -134,17 +148,6 @@ def thread(target: Callable, args: tuple) -> bool:
         logger.warning(f"Thread error: {e}", exc_info=True)
 
     return False
-
-
-def user_mention(uid: int) -> str:
-    # Get a mention text
-    text = ""
-    try:
-        text = general_link(f"{uid}", f"tg://user?id={uid}")
-    except Exception as e:
-        logger.warning(f"User mention error: {e}", exc_info=True)
-
-    return text
 
 
 def wait_flood(e: FloodWait) -> bool:

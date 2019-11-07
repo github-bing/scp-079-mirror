@@ -78,6 +78,22 @@ def share_data(client: Client, receivers: List[str], action: str, action_type: s
                data: Union[bool, dict, int, str] = None) -> bool:
     # Use this function to share data in the channel
     try:
+        thread(
+            target=share_data_thread,
+            args=(client, receivers, action, action_type, data)
+        )
+
+        return True
+    except Exception as e:
+        logger.warning(f"Share data error: {e}", exc_info=True)
+
+    return False
+
+
+def share_data_thread(client: Client, receivers: List[str], action: str, action_type: str,
+                      data: Union[bool, dict, int, str] = None) -> bool:
+    # Share data thread
+    try:
         if glovar.sender in receivers:
             receivers.remove(glovar.sender)
 
@@ -106,6 +122,6 @@ def share_data(client: Client, receivers: List[str], action: str, action_type: s
 
         return True
     except Exception as e:
-        logger.warning(f"Share data error: {e}", exc_info=True)
+        logger.warning(f"Share data thread error: {e}", exc_info=True)
 
     return False
